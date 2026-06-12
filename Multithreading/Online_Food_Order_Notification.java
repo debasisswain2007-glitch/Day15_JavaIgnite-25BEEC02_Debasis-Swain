@@ -92,3 +92,49 @@ Main Method
     Call placeOrder()
 
 */
+interface NotificationService {
+    void sendMessage();
+}
+
+class EmailNotification implements NotificationService {
+    @Override
+    public void sendMessage() {
+        System.out.println("Email Notification Sent");
+    }
+}
+
+class SMSNotification implements NotificationService {
+    @Override
+    public void sendMessage() {
+        System.out.println("SMS Notification Sent");
+    }
+}
+
+class OrderService {
+    private NotificationService notificationService;
+
+    OrderService(NotificationService notificationService) {
+        this.notificationService = notificationService;
+    }
+
+    void placeOrder() {
+        System.out.println("Order Confirmed");
+        notificationService.sendMessage();
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        // Email Notification
+        NotificationService emailService = new EmailNotification();
+        OrderService orderWithEmail = new OrderService(emailService);
+        orderWithEmail.placeOrder();
+
+        System.out.println();
+
+        // SMS Notification
+        NotificationService smsService = new SMSNotification();
+        OrderService orderWithSMS = new OrderService(smsService);
+        orderWithSMS.placeOrder();
+    }
+}
