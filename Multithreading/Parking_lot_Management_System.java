@@ -64,3 +64,56 @@ Main Method
 
 
 */
+
+
+
+class ParkingLot {
+    private int availableSlots = 3;
+
+    synchronized void parkCar(String carName) {
+        if (availableSlots > 0) {
+            System.out.println(carName + " Parked");
+            availableSlots--;
+            System.out.println("Available Slots: " + availableSlots);
+        } else {
+            System.out.println("No Parking Available for " + carName);
+        }
+    }
+}
+
+class CarThread extends Thread {
+    private ParkingLot parkingLot;
+    private String carName;
+
+    CarThread(ParkingLot parkingLot, String carName) {
+        this.parkingLot = parkingLot;
+        this.carName = carName;
+    }
+
+    public void run() {
+        parkingLot.parkCar(carName);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        ParkingLot parkingLot = new ParkingLot();
+
+        CarThread[] cars = new CarThread[6];
+        for (int i = 0; i < 6; i++) {
+            cars[i] = new CarThread(parkingLot, "Car " + (i + 1));
+            cars[i].start();
+        }
+
+        // Wait for all cars to finish
+        for (CarThread car : cars) {
+            try {
+                car.join();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+
+        System.out.println("\nParking simulation completed!");
+    }
+}
